@@ -7,7 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: unzip -q "orbital-cannon-mod (1).zip"
+        with:
+          fetch-depth: 0
+      - name: Unzip newest zip
+        run: |
+          NEWEST=$(for z in *.zip; do echo "$(git log -1 --format=%ct -- "$z")|$z"; done | sort -n | tail -1 | cut -d'|' -f2-)
+          echo "Using: $NEWEST"
+          unzip -q "$NEWEST"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
